@@ -1,4 +1,4 @@
-# nlp_paper_understand
+# NLP_Paper_Understand
 In this repository, I'll replicate the code for every paper. The codes might be written by myself, or copy from the author. If the codes are from author, I'll recombine the codes and annotate the codes more explicitly so that readers are able to read the codes more easily.
 ## 第2篇-word2vec
 &ensp;&ensp;&ensp;&ensp;代码使用的训练集为"text8"。代码里面已经写好下载它的代码，如果大家觉得在代码里下载的太慢，这里我提供了腾讯云盘的下载链接。
@@ -23,3 +23,7 @@ In this repository, I'll replicate the code for every paper. The codes might be 
 本代码是来自于TensorFlow 的官方教程： https://www.tensorflow.org/tutorials/word2vec 。
 
 我在官方教程的基础上进行了代码的修改，然后加了一些我个人的理解的注释，目的是为了让读者能够更容易的读懂代码。
+
+
+## 第3篇-doc2vec
+&ensp;&ensp;&ensp;&ensp;代码使用的数据集是aclImdb，在这里我提供了腾讯云盘的下载链接。
