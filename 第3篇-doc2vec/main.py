@@ -1,4 +1,7 @@
 #coding=utf-8
+'''
+Author:Haitaifantuan
+'''
 import tensorflow as tf
 import data_preprocessing
 from sklearn.metrics import accuracy_score
