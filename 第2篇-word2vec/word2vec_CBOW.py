@@ -15,6 +15,7 @@
 # limitations under the License.
 # ==============================================================================
 
+
 """word2vec CBOW example."""
 # 导入一些需要的库
 from __future__ import absolute_import
