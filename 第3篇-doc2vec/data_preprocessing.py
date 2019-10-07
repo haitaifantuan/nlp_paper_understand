@@ -2,7 +2,6 @@
 '''
 Author:Haitaifantuan
 '''
-
 import os
 import nltk
 import numpy as np
@@ -23,46 +22,53 @@ class Data_preprocessing(object):
         self.window_size = 10
         # 以上参数需要配置=======================================
         
-        if not os.path.exists('./saved_things/explanation.txt'):
-            '''
+        # 判断文件夹存不存在，不存在就创建一个
+        if not os.path.exists('./saved_things/'):
+            os.mkdir('./saved_things/')
+        if not os.path.exists('./saved_things/model'):
+            os.mkdir('./saved_things/model')
+        if not os.path.exists('./saved_things/data_pickle'):
+            os.mkdir('./saved_things/data_pickle') 
+        if not os.path.exists('./saved_things/model/training_set_doesnt_finished_model'):
+            os.mkdir('./saved_things/model/training_set_doesnt_finished_model')
+        if not os.path.exists('./saved_things/model/training_set_classification_finished_model'):
+            os.mkdir('./saved_things/model/training_set_classification_finished_model')
+            
+        if not os.path.exists('./saved_things/data_pickle/test-input-data-可删除.pickle'):  # 判断某个文件存不存在，不存在就重新读取并且创建这些文件
             # 从本地读取原始语料，并且将其分词后，返回回来。
             self.train_neg_raw_data, self.train_pos_raw_data, self.test_neg_raw_data, self.test_pos_raw_data, self.upsup_raw_data = self.read_all_raw_data_from_local_file()
             # 统计词频，构造常用词词表。
             self.word2id_dictionary = self.construct_word_dictionary()
-            '''
-            #以下可删除，调试使用
-            #with open('./saved_things/all_data_not_combined-可删除.pickle', 'wb') as file:
-            #    pickle.dump([self.train_neg_raw_data, self.train_pos_raw_data, self.test_neg_raw_data, self.test_pos_raw_data, self.upsup_raw_data, self.word2id_dictionary], file)
-            with open('./saved_things/all_data_not_combined-可删除.pickle', 'rb') as file:
-                self.train_neg_raw_data, self.train_pos_raw_data, self.test_neg_raw_data, self.test_pos_raw_data, self.upsup_raw_data, self.word2id_dictionary = pickle.load(file)
-            #以上可删除，调试使用
+            # 保存成pickle，下次继续训练可以加快代码运行速度
+            with open('./saved_things/data_pickle/all_data_not_combined-可删除.pickle', 'wb') as file:
+                pickle.dump([self.train_neg_raw_data, self.train_pos_raw_data, self.test_neg_raw_data, self.test_pos_raw_data, self.upsup_raw_data, self.word2id_dictionary], file)
             
             # 根据常用词词表，将raw_data转换为词所对应的id。
-            #self.train_zipped, self.test_zipped, self.upsup_raw_data_converted_to_id = self.convert_data_to_word_id_and_shuffle()
-            
-            #以下可删除，调试使用
-            #with open('./saved_things/shuffled_data_combined-可删除.pickle', 'wb') as file:
-            #    pickle.dump([self.train_zipped, self.test_zipped, self.upsup_raw_data_converted_to_id], file)
-            with open('./saved_things/shuffled_data_combined-可删除.pickle', 'rb') as file:
-                self.train_zipped, self.test_zipped, self.upsup_raw_data_converted_to_id = pickle.load(file)
-            #以上可删除，调试使用
-            
-            
+            self.train_zipped, self.test_zipped, self.upsup_raw_data_converted_to_id = self.convert_data_to_word_id_and_shuffle()
+            # 保存成pickle，下次继续训练可以加快代码运行速度
+            with open('./saved_things/data_pickle/shuffled_data_combined-可删除.pickle', 'wb') as file:
+                pickle.dump([self.train_zipped, self.test_zipped, self.upsup_raw_data_converted_to_id], file)
+
             # 基于转换为id后的训练数据，构建input样本。
             self.train_embedding_word_input_data, self.train_embedding_sentence_input, self.train_embedding_labels, self.train_sentiment_input, self.train_sentiment_labels = self.construct_input_data_and_label(self.train_zipped)
             # 基于转换为id后的测试数据，构建input样本。
             self.test_embedding_word_input_data, self.test_embedding_sentence_input, self.test_embedding_labels, self.test_sentiment_input, self.test_sentiment_labels = self.construct_input_data_and_label(self.test_zipped)
-            
-            #以下可删除，调试使用
-            with open('./saved_things/train-input-data-可删除.pickle', 'wb') as file:
+            # 保存成pickle，下次继续训练可以加快代码运行速度
+            with open('./saved_things/data_pickle/train-input-data-可删除.pickle', 'wb') as file:
                 pickle.dump([self.train_embedding_word_input_data, self.train_embedding_sentence_input, self.train_embedding_labels, self.train_sentiment_input, self.train_sentiment_labels], file)
-            with open('./saved_things/test-input-data-可删除.pickle', 'wb') as file:
+            with open('./saved_things/data_pickle/test-input-data-可删除.pickle', 'wb') as file:
                 pickle.dump([self.test_embedding_word_input_data, self.test_embedding_sentence_input, self.test_embedding_labels, self.test_sentiment_input, self.test_sentiment_labels], file)
-            #with open('./saved_things/train-input-data-可删除.pickle', 'rb') as file:
-            #    self.train_embedding_word_input_data, self.train_embedding_sentence_input, self.train_embedding_labels, self.train_sentiment_input, self.train_sentiment_labels = pickle.load(file)
-            #with open('./saved_things/test-input-data-可删除.pickle', 'rb') as file:
-            #    self.test_embedding_word_input_data, self.test_embedding_sentence_input, self.test_embedding_labels, self.test_sentiment_input, self.test_sentiment_labels = pickle.load(file)
-            #以上可删除，调试使用
+
+        else:
+            with open('./saved_things/data_pickle/all_data_not_combined-可删除.pickle', 'rb') as file:
+                self.train_neg_raw_data, self.train_pos_raw_data, self.test_neg_raw_data, self.test_pos_raw_data, self.upsup_raw_data, self.word2id_dictionary = pickle.load(file)
+            with open('./saved_things/data_pickle/shuffled_data_combined-可删除.pickle', 'rb') as file:
+                self.train_zipped, self.test_zipped, self.upsup_raw_data_converted_to_id = pickle.load(file)
+            with open('./saved_things/data_pickle/train-input-data-可删除.pickle', 'rb') as file:
+                self.train_embedding_word_input_data, self.train_embedding_sentence_input, self.train_embedding_labels, self.train_sentiment_input, self.train_sentiment_labels = pickle.load(file)
+            with open('./saved_things/data_pickle/test-input-data-可删除.pickle', 'rb') as file:
+                self.test_embedding_word_input_data, self.test_embedding_sentence_input, self.test_embedding_labels, self.test_sentiment_input, self.test_sentiment_labels = pickle.load(file)
+            print('从保存下来的pickle中读取了数据')
             
     def read_raw_data(self, file_path):
         '''
@@ -218,17 +224,3 @@ class Data_preprocessing(object):
         return embedding_word_input_data, embedding_sentence_input, embedding_labels, sentiment_input, sentiment_labels
                 
                 
-        
-        
-
-
-
-
-
-
-
-
-#t = Data_preprocessing()
-
-
-
