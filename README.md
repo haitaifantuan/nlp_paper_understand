@@ -34,7 +34,11 @@ In this repository, I'll replicate the code for every paper. The codes might be 
 
 &ensp;&ensp;&ensp;&ensp;代码使用的数据集是aclImdb，在这里我提供了腾讯云盘的下载链接。
 
-&ensp;&ensp;&ensp;&ensp;该代码全部由我自己从0开始写的，如果写的有异味，多多宽容下。然后给我留言提一些建议。
+&ensp;&ensp;&ensp;&ensp;链接：https://share.weiyun.com/58cHCoc 
+
+&ensp;&ensp;&ensp;&ensp;密码：g4jpl7
+
+&ensp;&ensp;&ensp;&ensp;该代码全部由我自己从0开始写的，如果写的有异味，望海涵。然后给我留言提一些建议。
 
 &ensp;&ensp;&ensp;&ensp;运行步骤：
 
