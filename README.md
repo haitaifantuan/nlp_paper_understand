@@ -6,24 +6,48 @@ In this repository, I'll replicate the code for every paper. The codes might be 
 &ensp;&ensp;&ensp;&ensp;链接：https://share.weiyun.com/539UrqX 
 
 &ensp;&ensp;&ensp;&ensp;密码：yajzmr
+
 #### 论文原理说明
+
 &ensp;&ensp;&ensp;&ensp;在我的博客上，可以看到论文的原理，大家戳这里：https://blog.csdn.net/u011559882/article/details/100678714
 
 #### 代码说明
+
 &ensp;&ensp;&ensp;&ensp;代码部分一共有两个文件，一个是“word2vec_CBOW.py”，一个是“word2vec_skip-gram.py”，大家从名字上也可以看出，一个是CBOW模型的代码，一个是skip-gram的代码。
 
 &ensp;&ensp;&ensp;&ensp;运行步骤：
 
-&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;1.从腾讯云盘下载text8.zip将其放到和代码同一个路径下的文件夹。（或者这一步不执行，代码里也可以自动下载）
+&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;1.从腾讯云盘下载“text8.zip”将其放到和代码同一个路径下的文件夹，也就是“第2篇-word2vec”这个文件夹下面。（或者这一步不执行，代码里也可以自动下载）
 
 &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;2.直接运行代码就可以了
 
 &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;3.运行完后，会在代码文件夹下面生成“wordvec_visualization.png”文件，这个是可视化文件，可以随意删除，没关系的。
+
 #### 其他说明
+
 本代码是来自于TensorFlow 的官方教程： https://www.tensorflow.org/tutorials/word2vec 。
 
 我在官方教程的基础上进行了代码的修改，然后加了一些我个人的理解的注释，目的是为了让读者能够更容易的读懂代码。
 
 
 ## 第3篇-doc2vec
+
 &ensp;&ensp;&ensp;&ensp;代码使用的数据集是aclImdb，在这里我提供了腾讯云盘的下载链接。
+
+&ensp;&ensp;&ensp;&ensp;该代码全部由我自己从0开始写的，如果写的有异味，多多宽容下。然后给我留言提一些建议。
+
+&ensp;&ensp;&ensp;&ensp;运行步骤：
+
+&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;1.将整个repository克隆下来。
+
+&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;2.从腾讯云下载数据集，解压到“第3篇-doc2vec”的根目录下面。
+
+&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;3.运行main.py模块，便可以自动的开始训练训练集然后保存模型。
+
+&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;4.训练集训练完后，将main.py中的train_flag变量改为False，然后再次运行main.py，就可以对测试集进行测试了。
+
+&ensp;&ensp;&ensp;&ensp;其他注意事项：
+
+&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;1.里面的超参是可以调整的，具体可以看main.py模块里面的注释。
+
+&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;2.在训练训练集的词向量和句向量的时候，训练到一半，如果需要停止训练，直接停止就可以了。下次直接打开继续训练就可以了，从上一个epoch开始继续训练。

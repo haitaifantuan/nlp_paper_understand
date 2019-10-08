@@ -9,26 +9,40 @@ import os
 
 
 # 以下参数需要配置=======================================
-window_size = 10
-word_dict_size = 30000
-sentence_and_word_embedding_size = 40
-batch_size = 10  # 我用是的RTX2080，可以设置到5000
-classfication_batch_size = 100
+window_size = 10  # 训练时窗口大小
+word_dict_size = 30000  # 词典大小
+sentence_and_word_embedding_size = 400  # 每个词和句子的维度
+batch_size = 750  # 我用是的RTX2080，可以设置到750
+classfication_batch_size = 100  # 训练情感分类模型时，每批次的大小
+
+embedding_train_total_epoch = 500  # 训练训练集的词向量和句向量的时候，训练多少个epoch
+classifier_train_total_epoch = 20  # 训练情感分类模型时，训练多少个epoch
+embedding_test_total_epoch = 20  # 训练测试集的句向量时，训练多少个epoch
+
+train_flag = True  # 训练的时候设置为true，测试的时候设置为false
 # 以上参数需要配置=======================================
+
+test_flag = (train_flag != True)
 
 
 class Model(object):
-    def __init__(self, embedding_train_flag):
+    def __init__(self, embedding_train_flag, embedding_train_total_epoch, classifier_train_total_epoch, embedding_test_total_epoch):
         self.embedding_train_flag = embedding_train_flag
         self.graph_name = self.create_model()
-        self.embedding_train_total_epoch = 500
-        self.classifier_train_total_epoch = 50
-        self.embedding_test_total_epoch = 50
+        self.embedding_train_total_epoch = embedding_train_total_epoch
+        self.classifier_train_total_epoch = classifier_train_total_epoch
+        self.embedding_test_total_epoch = embedding_test_total_epoch
     
     def create_model(self):
         doc2vec_graph = tf.Graph()
-        with doc2vec_graph.as_default(), tf.device('/cpu:0'):  # 如果要使用cpu，这里改成'/cpu:0'
+        with doc2vec_graph.as_default(), tf.device('/gpu:0'):  # 如果要使用cpu，这里改成'/cpu:0'
             with tf.variable_scope("placeholder"):
+                # 定义一个global step
+                self.global_step = tf.Variable(initial_value=0, name='global_step', trainable=False)
+                self.one = tf.constant(1)
+                self.global_step_op = tf.add(self.global_step, self.one)
+                self.global_step_update = tf.assign(self.global_step, self.global_step_op)
+                
                 # 这一个scope存放的是placehoder
                 self.words_input = tf.placeholder(dtype=tf.int32, shape=[None, window_size-1])
                 self.sentence_input = tf.placeholder(dtype=tf.int32, shape=[None, 1])
@@ -88,7 +102,7 @@ class Model(object):
             # 下面定义train操作
             self.optimizer = tf.train.AdamOptimizer()
             # 找出不同阶段需要训练不同的变量。找出训练训练集的句向量时，需要被训练的参数
-            self.sentence_embedding_train_stage_need_to_update_variables = tf.get_collection(key=tf.GraphKeys.TRAINABLE_VARIABLES, scope="sentence_embedding_train_parameters_scope")
+            self.sentence_embedding_train_stage_need_to_update_variables = tf.get_collection(key=tf.GraphKeys.TRAINABLE_VARIABLES, scope=".")
             # 找出训练测试集的句向量时，需要被训练的参数
             self.sentence_embedding_test_stage_need_to_update_variables = tf.get_collection(key=tf.GraphKeys.TRAINABLE_VARIABLES, scope="sentence_embedding_test_parameters_scope")
             # 找出训练情感分类时，需要被训练的参数
@@ -114,13 +128,13 @@ class Model(object):
     def embedding_train_classifier_train(self, data_obj, sess):
         sess.run(tf.global_variables_initializer())
         total_steps = len(data_obj.train_embedding_word_input_data) // batch_size
-        saver = tf.train.Saver(max_to_keep=10)
+        saver = tf.train.Saver(max_to_keep=5)
         if os.path.exists('./saved_things/model/training_set_doesnt_finished_model/checkpoint'):
             restore_path = tf.train.latest_checkpoint('./saved_things/model/training_set_doesnt_finished_model')
             saver.restore(sess, restore_path)
             print('从之前训练到一半的模型恢复，并继续训练')
         
-        for epoch in range(self.embedding_train_total_epoch):
+        for epoch in range(sess.run(self.global_step)//total_steps, self.embedding_train_total_epoch):
             for each_step in range(total_steps):
                 train_embedding_word_input_data = data_obj.train_embedding_word_input_data[each_step*batch_size:(each_step+1)*batch_size][:]
                 train_embedding_sentence_input = data_obj.train_embedding_sentence_input[each_step*batch_size:(each_step+1)*batch_size][:]
@@ -131,12 +145,16 @@ class Model(object):
                              self.embedding_label:train_embedding_labels}
                 
                 _, mean_loss = sess.run([self.embedding_train_op, self.mean_loss], feed_dict=feed_dict)
-                print('当前为第{}个epoch-----当前为第{}步-----当前Loss为：{}-----已训练{}个样本'.format(epoch+1, each_step, mean_loss, each_step*batch_size))
                 
-            if (epoch%5)==0:
+                # global_step加1
+                global_steps = sess.run(self.global_step_update)
+                
+                print('当前为第{}个epoch-----当前global step为第{}步-----当前Loss为：{}-----已训练{}个样本'.format(epoch, global_steps, mean_loss, each_step*batch_size))
+                
+            if (global_steps%10)==0:
                 with self.graph_name.as_default():
                     # 暂时中途保存下模型，这样以后可以接着训练
-                    saver.save(sess, './saved_things/model/training_set_doesnt_finished_model/model_training_not_finished.ckpt', global_step=epoch)
+                    saver.save(sess, './saved_things/model/training_set_doesnt_finished_model/model_training_not_finished.ckpt', global_step=global_steps)
 
         # epoch训练完毕后，开始训练情感分类相关的参数
         total_steps = len(data_obj.train_sentiment_input) // classfication_batch_size
@@ -161,7 +179,7 @@ class Model(object):
                                      tf.get_default_graph().get_tensor_by_name("sentiment_classification_train_scope/cls_hidden_to_output_1/kernel:0"),
                                      tf.get_default_graph().get_tensor_by_name("sentiment_classification_train_scope/cls_hidden_to_output_1/bias:0")]
             saver = tf.train.Saver(var_list=need_to_save_var_list)
-            saver.save(sess, './saved_things/model/training_set_classification_finished_model/model_{}_epochs_training_finished.ckpt'.format(self.embedding_train_total_epoch))
+            saver.save(sess, './saved_things/model/training_set_classification_finished_model/model_training_finished.ckpt', global_step=sess.run(self.global_step))
             
     
     def embedding_test_classifier_predict(self, data_obj, sess):
@@ -175,7 +193,8 @@ class Model(object):
                                      tf.get_default_graph().get_tensor_by_name("sentiment_classification_train_scope/cls_hidden_to_output_1/kernel:0"),
                                      tf.get_default_graph().get_tensor_by_name("sentiment_classification_train_scope/cls_hidden_to_output_1/bias:0")]            
             saver = tf.train.Saver(var_list=need_to_restore_var_list)
-            saver.restore(sess, './saved_things/model/training_set_classification_finished_model/model_{}_epochs_training_finished.ckpt'.format(self.embedding_train_total_epoch))
+            restore_path = tf.train.latest_checkpoint('./saved_things/model/training_set_classification_finished_model')
+            saver.restore(sess, restore_path)
         # 模型的部分参数恢复成功后，我们开始训练测试集的句向量。训练一定数量的epoch后，然后调用情感分类器进行预测
         total_steps = len(data_obj.test_embedding_sentence_input) // batch_size
         for epoch in range(self.embedding_test_total_epoch):
@@ -189,8 +208,8 @@ class Model(object):
                                  self.embedding_label:test_embedding_labels}
     
                 _, mean_loss = sess.run([self.embedding_test_op, self.mean_loss], feed_dict=feed_dict)
-                print('当前为第{}个epoch-----当前为第{}步-----当前Loss为：{}-----已训练{}个样本'.format(epoch+1, each_step, mean_loss, each_step*batch_size))                
-                
+                print('当前为第{}个epoch-----当前为第{}步-----当前Loss为：{}-----已训练{}个样本'.format(epoch+1, each_step, mean_loss, each_step*batch_size))
+                                
         # 测试集的句向量训练完毕后，调用情感分类模型进行预测
         total_steps = len(data_obj.test_sentiment_input) // classfication_batch_size
         total_sample = 0
@@ -205,7 +224,7 @@ class Model(object):
             acc = accuracy_score(y_true=test_sentiment_labels,y_pred=sentiment_predict[0])
             total_sample += len(data_obj.test_sentiment_labels[each_step*classfication_batch_size:(each_step+1)*classfication_batch_size][:])
             correct_sample += acc*total_sample
-            print('当前样本数为：{}-----准确率为：{}'.format(batch_size, acc))
+            print('当前样本数为：{}-----准确率为：{}'.format(classfication_batch_size, acc))
         
         print('预测完毕-----总样本数为：{}-----正确率为：{}'.format(len(data_obj.test_sentiment_input), correct_sample/total_sample))
                     
@@ -218,15 +237,16 @@ session_config = tf.ConfigProto(
                     allow_soft_placement=True)
 session_config.gpu_options.allow_growth = True  # 动态申请显存
 
-# 训练训练集的句向量阶段
-model = Model(embedding_train_flag=True)
-with tf.Session(graph=model.graph_name, config=session_config) as sess:
-    model.embedding_train_classifier_train(data, sess)
-
-# 训练测试集的句向量阶段，训练好测试集的句向量后，直接放入到情感分类器里面进行情感分类。
-tf.reset_default_graph()  # 清空计算图并重新创建。
-model = Model(embedding_train_flag=False)
-with tf.Session(graph=model.graph_name, config=session_config) as sess:
-    model.embedding_test_classifier_predict(data, sess)
+if train_flag == True:
+    # 训练训练集的句向量阶段
+    model = Model(True, embedding_train_total_epoch, classifier_train_total_epoch, embedding_test_total_epoch)
+    with tf.Session(graph=model.graph_name, config=session_config) as sess:
+        model.embedding_train_classifier_train(data, sess)
+else:
+    # 训练测试集的句向量阶段，训练好测试集的句向量后，直接放入到情感分类器里面进行情感分类。
+    tf.reset_default_graph()  # 清空计算图并重新创建。
+    model = Model(False, embedding_train_total_epoch, classifier_train_total_epoch, embedding_test_total_epoch)
+    with tf.Session(graph=model.graph_name, config=session_config) as sess:
+        model.embedding_test_classifier_predict(data, sess)
 
     
