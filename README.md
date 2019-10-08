@@ -21,7 +21,7 @@ In this repository, I'll replicate the code for every paper. The codes might be 
 
 &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;tensorflow 1.14
 
-&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;在环境方面如果碰到了问题，大家可以使用Anaconda创建一个与我一模一样的环境。Anaconda管理环境还是非常方便的。
+&ensp;&ensp;&ensp;&ensp;在环境方面如果碰到了问题，大家可以使用Anaconda创建一个与我一模一样的环境。Anaconda管理环境还是非常方便的。
 
 &ensp;&ensp;&ensp;&ensp;运行步骤：
 
@@ -60,7 +60,7 @@ In this repository, I'll replicate the code for every paper. The codes might be 
 
 &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;tensorflow 1.14
 
-&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;在环境方面如果碰到了问题，大家可以使用Anaconda创建一个与我一模一样的环境。Anaconda管理环境还是非常方便的。
+&ensp;&ensp;&ensp;&ensp;在环境方面如果碰到了问题，大家可以使用Anaconda创建一个与我一模一样的环境。Anaconda管理环境还是非常方便的。
 
 
 &ensp;&ensp;&ensp;&ensp;运行步骤：
