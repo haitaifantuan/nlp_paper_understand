@@ -2,6 +2,11 @@
 &ensp;&ensp;&ensp;&ensp;在这个repository里, 我会复现论文的代码。这些代码有可能是我自己写的，也有可能是论文作者分享的。如果代码是来自于论文作者的话，我有可能会重组一下代码，添加一些中文注释，从而让读者更容易读懂代码。
 
 ## 第2篇-word2vec
+
+&ensp;&ensp;&ensp;&ensp;本代码是来自于TensorFlow 的官方教程： https://www.tensorflow.org/tutorials/word2vec 。
+
+&ensp;&ensp;&ensp;&ensp;我在官方教程的基础上进行了代码的修改，然后加了一些我个人的理解的注释，目的是为了让读者能够更容易的读懂代码。
+
 &ensp;&ensp;&ensp;&ensp;代码使用的训练集为"text8"。代码里面已经写好下载它的代码，如果大家觉得在代码里下载的太慢，这里我提供了腾讯云盘的下载链接。
 
 &ensp;&ensp;&ensp;&ensp;链接：https://share.weiyun.com/539UrqX 
@@ -32,22 +37,17 @@
 
 &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;3.运行完后，会在代码文件夹下面生成“wordvec_visualization.png”文件，这个是可视化文件，可以随意删除，没关系的。
 
-#### 其他说明
-
-&ensp;&ensp;&ensp;&ensp;本代码是来自于TensorFlow 的官方教程： https://www.tensorflow.org/tutorials/word2vec 。
-
-&ensp;&ensp;&ensp;&ensp;我在官方教程的基础上进行了代码的修改，然后加了一些我个人的理解的注释，目的是为了让读者能够更容易的读懂代码。
 
 
 ## 第3篇-doc2vec
+
+&ensp;&ensp;&ensp;&ensp;该代码全部由我自己从0开始写的，如果写的有异味，望海涵。然后给我留言提一些建议。
 
 &ensp;&ensp;&ensp;&ensp;代码使用的数据集是aclImdb，在这里我提供了腾讯云盘的下载链接。
 
 &ensp;&ensp;&ensp;&ensp;链接：https://share.weiyun.com/58cHCoc 
 
 &ensp;&ensp;&ensp;&ensp;密码：g4jpl7
-
-&ensp;&ensp;&ensp;&ensp;该代码全部由我自己从0开始写的，如果写的有异味，望海涵。然后给我留言提一些建议。
 
 #### 论文原理说明
 
