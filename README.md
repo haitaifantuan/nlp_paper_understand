@@ -21,7 +21,7 @@
 
 &ensp;&ensp;&ensp;&ensp;代码部分一共有两个文件，一个是“word2vec_CBOW.py”，一个是“word2vec_skip-gram.py”，大家从名字上也可以看出，一个是CBOW模型的代码，一个是skip-gram的代码。
 
-&ensp;&ensp;&ensp;&ensp;运行环境：
+&ensp;&ensp;&ensp;&ensp;<font color=red>运行环境：</font>
 
 &ensp;&ensp;&ensp;&ensp;python 3.6.7
 
@@ -29,7 +29,7 @@
 
 &ensp;&ensp;&ensp;&ensp;在环境方面如果碰到了问题，大家可以使用Anaconda创建一个与我一模一样的环境。Anaconda管理环境还是非常方便的。
 
-&ensp;&ensp;&ensp;&ensp;运行步骤：
+&ensp;&ensp;&ensp;&ensp;<font color=red>运行步骤：</font>
 
 &ensp;&ensp;&ensp;&ensp;1.从腾讯云盘下载“text8.zip”将其放到和代码同一个路径下的文件夹，也就是“第2篇-word2vec”这个文件夹下面。（或者这一步不执行，代码里也可以自动下载）
 
@@ -55,7 +55,7 @@
 
 #### 代码说明
 
-&ensp;&ensp;&ensp;&ensp;运行环境：
+&ensp;&ensp;&ensp;&ensp;<font color=red>运行环境：</font>
 
 &ensp;&ensp;&ensp;&ensp;python 3.6.7
 
@@ -64,7 +64,7 @@
 &ensp;&ensp;&ensp;&ensp;在环境方面如果碰到了问题，大家可以使用Anaconda创建一个与我一模一样的环境。Anaconda管理环境还是非常方便的。
 
 
-&ensp;&ensp;&ensp;&ensp;运行步骤：
+&ensp;&ensp;&ensp;&ensp;<font color=red>运行步骤：</font>
 
 &ensp;&ensp;&ensp;&ensp;1.将整个repository克隆下来。
 
