@@ -40,6 +40,12 @@ In this repository, I'll replicate the code for every paper. The codes might be 
 
 &ensp;&ensp;&ensp;&ensp;该代码全部由我自己从0开始写的，如果写的有异味，望海涵。然后给我留言提一些建议。
 
+#### 论文原理说明
+
+&ensp;&ensp;&ensp;&ensp;在我的博客上，可以看到论文的原理，大家戳这里：https://blog.csdn.net/u011559882/article/details/101231855
+
+#### 代码说明
+
 &ensp;&ensp;&ensp;&ensp;运行步骤：
 
 &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;1.将整个repository克隆下来。
