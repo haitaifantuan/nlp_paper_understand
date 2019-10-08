@@ -55,7 +55,7 @@
 
 #### 代码说明
 
-&ensp;&ensp;&ensp;&ensp;<font color=red>运行环境：</font>
+&ensp;&ensp;&ensp;&ensp;**运行环境：**
 
 &ensp;&ensp;&ensp;&ensp;python 3.6.7
 
@@ -64,7 +64,7 @@
 &ensp;&ensp;&ensp;&ensp;在环境方面如果碰到了问题，大家可以使用Anaconda创建一个与我一模一样的环境。Anaconda管理环境还是非常方便的。
 
 
-&ensp;&ensp;&ensp;&ensp;<font color=red>运行步骤：</font>
+&ensp;&ensp;&ensp;&ensp;**运行步骤：**
 
 &ensp;&ensp;&ensp;&ensp;1.将整个repository克隆下来。
 
