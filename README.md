@@ -1,5 +1,6 @@
 # NLP_Paper_Understand
-In this repository, I'll replicate the code for every paper. The codes might be written by myself, or copy from the author. If the codes are from author, I'll recombine the codes and annotate the codes more explicitly so that readers are able to read the codes more easily.
+&ensp;&ensp;&ensp;&ensp;在这个repository里, 我会复现论文的代码。这些代码有可能是我自己写的，也有可能是论文作者分享的。如果代码是来自于论文作者的话，我有可能会重组一下代码，添加一些中文注释，从而让读者更容易读懂代码。
+
 ## 第2篇-word2vec
 &ensp;&ensp;&ensp;&ensp;代码使用的训练集为"text8"。代码里面已经写好下载它的代码，如果大家觉得在代码里下载的太慢，这里我提供了腾讯云盘的下载链接。
 
