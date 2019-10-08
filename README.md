@@ -23,19 +23,19 @@
 
 &ensp;&ensp;&ensp;&ensp;运行环境：
 
-&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;python 3.6.7
+&ensp;&ensp;&ensp;&ensp;python 3.6.7
 
-&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;tensorflow 1.14
+&ensp;&ensp;&ensp;&ensp;tensorflow 1.14
 
 &ensp;&ensp;&ensp;&ensp;在环境方面如果碰到了问题，大家可以使用Anaconda创建一个与我一模一样的环境。Anaconda管理环境还是非常方便的。
 
 &ensp;&ensp;&ensp;&ensp;运行步骤：
 
-&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;1.从腾讯云盘下载“text8.zip”将其放到和代码同一个路径下的文件夹，也就是“第2篇-word2vec”这个文件夹下面。（或者这一步不执行，代码里也可以自动下载）
+&ensp;&ensp;&ensp;&ensp;1.从腾讯云盘下载“text8.zip”将其放到和代码同一个路径下的文件夹，也就是“第2篇-word2vec”这个文件夹下面。（或者这一步不执行，代码里也可以自动下载）
 
-&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;2.直接运行代码就可以了
+&ensp;&ensp;&ensp;&ensp;2.直接运行代码就可以了
 
-&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;3.运行完后，会在代码文件夹下面生成“wordvec_visualization.png”文件，这个是可视化文件，可以随意删除，没关系的。
+&ensp;&ensp;&ensp;&ensp;3.运行完后，会在代码文件夹下面生成“wordvec_visualization.png”文件，这个是可视化文件，可以随意删除，没关系的。
 
 
 
@@ -57,25 +57,25 @@
 
 &ensp;&ensp;&ensp;&ensp;运行环境：
 
-&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;python 3.6.7
+&ensp;&ensp;&ensp;&ensp;python 3.6.7
 
-&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;tensorflow 1.14
+&ensp;&ensp;&ensp;&ensp;tensorflow 1.14
 
 &ensp;&ensp;&ensp;&ensp;在环境方面如果碰到了问题，大家可以使用Anaconda创建一个与我一模一样的环境。Anaconda管理环境还是非常方便的。
 
 
 &ensp;&ensp;&ensp;&ensp;运行步骤：
 
-&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;1.将整个repository克隆下来。
+&ensp;&ensp;&ensp;&ensp;1.将整个repository克隆下来。
 
-&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;2.从腾讯云下载数据集，解压到“第3篇-doc2vec”的根目录下面。
+&ensp;&ensp;&ensp;&ensp;2.从腾讯云下载数据集，解压到“第3篇-doc2vec”的根目录下面。
 
-&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;3.运行main.py模块，便可以自动的开始训练训练集然后保存模型。
+&ensp;&ensp;&ensp;&ensp;3.运行main.py模块，便可以自动的开始训练训练集然后保存模型。
 
-&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;4.训练集训练完后，将main.py中的train_flag变量改为False，然后再次运行main.py，就可以对测试集进行测试了。
+&ensp;&ensp;&ensp;&ensp;4.训练集训练完后，将main.py中的train_flag变量改为False，然后再次运行main.py，就可以对测试集进行测试了。
 
 &ensp;&ensp;&ensp;&ensp;其他注意事项：
 
-&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;1.里面的超参是可以调整的，具体可以看main.py模块里面的注释。
+&ensp;&ensp;&ensp;&ensp;1.里面的超参是可以调整的，具体可以看main.py模块里面的注释。
 
-&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;2.在训练训练集的词向量和句向量的时候，训练到一半，如果需要停止训练，直接停止就可以了。下次直接打开继续训练就可以了，从上一个epoch开始继续训练。
+&ensp;&ensp;&ensp;&ensp;2.在训练训练集的词向量和句向量的时候，训练到一半，如果需要停止训练，直接停止就可以了。下次直接打开继续训练就可以了，从上一个epoch开始继续训练。
