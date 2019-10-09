@@ -3,7 +3,7 @@
 
 ## 第2篇-word2vec
 
-&ensp;&ensp;&ensp;&ensp;本代码是来自于TensorFlow 的官方教程： https://www.tensorflow.org/tutorials/word2vec 。
+&ensp;&ensp;&ensp;&ensp;本代码基于TensorFlow 的官方教程： https://www.tensorflow.org/tutorials/word2vec 。
 
 &ensp;&ensp;&ensp;&ensp;我在官方教程的基础上进行了代码的修改，然后加了一些我个人的理解的注释，目的是为了让读者能够更容易的读懂代码。
 
