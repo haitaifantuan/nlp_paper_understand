@@ -3,6 +3,8 @@
 
 ## 第4篇-Neural_Machine_Translation_by_Jointly_Learning_to_Align_and_Translate
 
+
+&ensp;&ensp;&ensp;&ensp;这篇就是有名的加入了attention机制的机器翻译模型。
 &ensp;&ensp;&ensp;&ensp;该代码全部由我自己从0开始写的，如果写的有异味，望海涵。然后给我留言提一些建议。
 
 &ensp;&ensp;&ensp;&ensp;代码使用的数据集是TODO，在这里我提供了腾讯云盘的下载链接。
