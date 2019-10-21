@@ -13,7 +13,7 @@ import collections
 class Data_preprocess(object):
     def __init__(self):
         pass
-    
+
 
     def tokenize_corpus(self):
         '''
@@ -48,16 +48,16 @@ class Data_preprocess(object):
         '''
         # 生成英文的token_dictionary
         english_token_id_dictionary = {}
-        english_token_id_dictionary['<unk>'] = 0
-        english_token_id_dictionary['<sos>'] = 1
-        english_token_id_dictionary['<eos>'] = 2
-        en_counter = collections.Counter()
+        english_token_id_dictionary['<unk>'] = 0  # 我们定义unk的id是0，unk的意思是，当句子中碰到token dictionary里面没有的token的时候，就转换为这个
+        english_token_id_dictionary['<sos>'] = 1  # 我们定义sos的id是1
+        english_token_id_dictionary['<eos>'] = 2  # 我们定义eos的id是1
+        en_counter = collections.Counter()  # 创建一个英文token的计数器，专门拿来计算每个token出现了多少次
         with open(train_args.raw_train_english_after_tokenization_data_path, 'r', encoding='utf-8') as file:
             for line in file:
                 line = line.strip().split(' ')
                 for token in line:
                     en_counter[token] += 1
-        most_common_en_token_list = en_counter.most_common(train_args.Source_vocab_size-3)
+        most_common_en_token_list = en_counter.most_common(train_args.Source_vocab_size-3)  # 找出最常见的Source_vocab_size-3的token
         for token_tuple in most_common_en_token_list:
             english_token_id_dictionary[token_tuple[0]] = len(english_token_id_dictionary)
         # 保存english_token_id_dictionary
@@ -66,16 +66,16 @@ class Data_preprocess(object):
 
         # 生成中文的token_dictionary 以及把 tokenization后的结果保存下来
         chinese_token_id_dictionary = {}
-        chinese_token_id_dictionary['<unk>'] = 0
-        chinese_token_id_dictionary['<sos>'] = 1
-        chinese_token_id_dictionary['<eos>'] = 2
-        zh_counter = collections.Counter()
+        chinese_token_id_dictionary['<unk>'] = 0  # 我们定义unk的id是0，unk的意思是，当句子中碰到token dictionary里面没有的token的时候，就转换为这个
+        chinese_token_id_dictionary['<sos>'] = 1  # 我们定义sos的id是1
+        chinese_token_id_dictionary['<eos>'] = 2  # 我们定义eos的id是1
+        zh_counter = collections.Counter()  # 创建一个中文token的计数器，专门拿来计算每个token出现了多少次
         with open(train_args.raw_train_chinese_after_tokenization_data_path, 'r', encoding='utf-8') as file:
             for line in file:
                 line = line.strip().split(' ')
                 for token in line:
                     zh_counter[token] += 1
-        most_common_zh_token_list = zh_counter.most_common(train_args.Target_vocab_size-3)
+        most_common_zh_token_list = zh_counter.most_common(train_args.Target_vocab_size-3)  # 找出最常见的Target_vocab_size-3的token
         for token_tuple in most_common_zh_token_list:
             chinese_token_id_dictionary[token_tuple[0]] = len(chinese_token_id_dictionary)
         # 保存token_dictionary
