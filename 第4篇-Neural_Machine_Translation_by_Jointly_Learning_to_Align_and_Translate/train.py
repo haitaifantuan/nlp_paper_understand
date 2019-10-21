@@ -7,8 +7,17 @@ import tensorflow as tf
 import train_args
 import os
 
+#os.environ["CUDA_VISIBLE_DEVICES"] = "0"  # 如果有GPU的同学，可以把这个打开，或者自己研究下怎么打开。
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+# 首先判断模型保存的路径存不存在，不存在就创建
+if not os.path.exists('./saved_things'):
+    os.mkdir('./saved_things')
+if not os.path.exists('./saved_things/doesnt_finish_training_model'):
+    os.mkdir('./saved_things/doesnt_finish_training_model')
+if not os.path.exists('./saved_things/finish_training_model'):
+    os.mkdir('./saved_things/finish_training_model')
+
+
 mt_graph = tf.Graph()  # 创建machine translation 专用的graph
 data_graph = tf.Graph()  # 创建数据专用的graph
 
@@ -177,6 +186,7 @@ nm_model = Model()
 
 session_config = tf.ConfigProto(allow_soft_placement=True)  # sesstion的config
 session_config.gpu_options.allow_growth  = True
+# 打开Sesstion，开始训练模型
 with tf.Session(graph=mt_graph) as sess:
     saver = tf.train.Saver(max_to_keep=5)  # 构建saver
     data_batch_generation_obj.iterator_initialization(sess_data)

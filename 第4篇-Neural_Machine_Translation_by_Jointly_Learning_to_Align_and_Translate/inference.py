@@ -168,6 +168,7 @@ nmt_model = Model()  # 创建模型
 # sesstion 的config
 session_config = tf.ConfigProto(allow_soft_placement=True)
 session_config.gpu_options.allow_growth  = True
+# 打开sesstion，开始进行翻译的预测。
 with tf.Session(graph=mt_graph, config=session_config) as sess:
     # 构建saver
     saver = tf.train.Saver(max_to_keep=5)
