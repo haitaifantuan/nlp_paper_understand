@@ -5,6 +5,7 @@
 
 
 &ensp;&ensp;&ensp;&ensp;这篇就是有名的加入了attention机制的机器翻译模型。
+
 &ensp;&ensp;&ensp;&ensp;该代码全部由我自己从0开始写的，如果写的有异味，望海涵。然后给我留言提一些建议。
 
 &ensp;&ensp;&ensp;&ensp;代码使用的数据集是TODO，在这里我提供了腾讯云盘的下载链接。
@@ -17,6 +18,7 @@
 &ensp;&ensp;&ensp;&ensp;代码中有具体的注释
 
 &ensp;&ensp;&ensp;&ensp;同时，在我的博客上，可以看到代码详细的讲解以及论文的原理，大家戳这里：
+
 &ensp;&ensp;&ensp;&ensp;https://blog.csdn.net/u011559882/article/details/102337490
 
 #### 代码说明
