@@ -76,6 +76,7 @@ class data_batch_generation(object):
         ((enc_inp, enc_size), (dec_inp, dec_trg, dec_trg_size))= sess.run(self.line)
         return ((enc_inp, enc_size), (dec_inp, dec_trg, dec_trg_size))
 
+
 class Model(object):
     def __init__(self):
         with mt_graph.as_default():
