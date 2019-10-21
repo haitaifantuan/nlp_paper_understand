@@ -10,9 +10,11 @@
 &ensp;&ensp;&ensp;&ensp;链接：TODO
 
 &ensp;&ensp;&ensp;&ensp;密码：TODO
-#### 论文原理说明
+#### 论文原理说明以及代码详细讲解
 
-&ensp;&ensp;&ensp;&ensp;在我的博客上，可以看到论文的原理，大家戳这里：https://blog.csdn.net/u011559882/article/details/102337490
+&ensp;&ensp;&ensp;&ensp;代码中有具体的注释
+
+&ensp;&ensp;&ensp;&ensp;同时，在我的博客上，可以看到代码详细的讲解以及论文的原理，大家戳这里：https://blog.csdn.net/u011559882/article/details/102337490
 
 #### 代码说明
 
