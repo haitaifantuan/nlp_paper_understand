@@ -13,15 +13,7 @@ import collections
 class Data_preprocess(object):
     def __init__(self):
         pass
-        #self.raw_train_english_data_path = train_args.raw_train_english_data_path
-        #self.raw_train_chinese_data_path = train_args.raw_train_chinese_data_path
-        #self.raw_train_english_after_tokenization_data_path = train_args.raw_train_english_after_tokenization_data_path
-        #self.raw_train_chinese_after_tokenization_data_path = train_args.raw_train_chinese_after_tokenization_data_path
-        #self.train_en_converted_to_id_path = train_args.train_en_converted_to_id_path
-        #self.train_zh_converted_to_id_path = train_args.train_zh_converted_to_id_path
-        #self.english_token_id_dictionary_pickle_path = train_args.english_token_id_dictionary_pickle_path
-        #self.chinese_token_id_dictionary_pickle_path = train_args.chinese_token_id_dictionary_pickle_path
-
+    
 
     def tokenize_corpus(self):
         '''
