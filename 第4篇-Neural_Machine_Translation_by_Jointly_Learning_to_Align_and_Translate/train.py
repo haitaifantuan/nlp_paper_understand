@@ -23,7 +23,7 @@ data_graph = tf.Graph()  # 创建数据专用的graph
 
 class data_batch_generation(object):
     def __init__(self):
-        with data_graph.as_default():
+        with data_graph.as_default():  # 定义在这个图下面创建模型
             # 通过tf.data.TextLineDataset()来读取训练集数据
             self.src_data = tf.data.TextLineDataset(train_args.train_en_converted_to_id_path)
             self.trg_data = tf.data.TextLineDataset(train_args.train_zh_converted_to_id_path)
@@ -34,11 +34,10 @@ class data_batch_generation(object):
             self.trg_data = self.trg_data.map(lambda line: tf.string_split([line], delimiter=' ').values)
             self.trg_data = self.trg_data.map(lambda line: tf.string_to_number(line, tf.int32))
 
-            # self.src_data添加一下每个句子的长度
+            # 为self.src_data添加一下每个句子的长度
             self.src_data = self.src_data.map(lambda x: (x, tf.size(x)))
-            # self.trg_data添加一下decoder的输入和每个decoder输入句子的长度
-            # 形式为(dec_input, trg_label, trg_length)
-            # trg_length后面计算loss的时候拿来mask用的。
+            # 为self.trg_data添加一下decoder的输入。形式为(dec_input, trg_label, trg_length)
+            # tf.size(x)后面计算loss的时候拿来mask用的以及使用tf.nn.bidirectional_dynamic_rnn()这个函数的时候使用的。
             self.trg_data = self.trg_data.map(lambda x: (tf.concat([[1], x[:-1]], axis=0), x, tf.size(x)))
 
             # 将self.src_data和self.trg_data zip起来，方便后面过滤数据。
@@ -50,14 +49,13 @@ class data_batch_generation(object):
                 enc_input_flag = tf.logical_and(tf.greater(enc_input_size, 1), tf.less_equal(enc_input_size, train_args.train_max_sent_len))
                 # decoder的input的长度和decoder的label是一样的，所以这里可以这样用。
                 dec_input_flag = tf.logical_and(tf.greater(dec_target_label_size, 1), tf.less_equal(dec_target_label_size, train_args.train_max_sent_len))
-                
                 flag = tf.logical_and(enc_input_flag, dec_input_flag)
-                
                 return flag
+
             self.data = self.data.filter(filter_according_to_length)
 
             # 由于句子长短不同，我们这里将句子的长度pad成固定的，pad成当前batch里面最长的那个。
-            # 我们使用0来pad，也就是[UNK]标志
+            # 我们使用0来pad，也就是['<unk>']标志
             # 后续计算loss的时候，会根据trg_label的长度来mask掉pad的部分。
             # 设置为None的时候，就代表把这个句子pad到当前batch的样本下最长的句子的长度。
             # enc_input_size本来就是单个数字，因此不用pad。
@@ -66,13 +64,16 @@ class data_batch_generation(object):
                                     (tf.TensorShape([None]), tf.TensorShape([None]), tf.TensorShape([]))))
             self.padded_data = self.padded_data.shuffle(10000)
 
+            # 创建一个iterator
             self.padded_data_iterator = self.padded_data.make_initializable_iterator()
             self.line = self.padded_data_iterator.get_next()
 
     def iterator_initialization(self, sess):
+        # 初始化iterator
         sess.run(self.padded_data_iterator.initializer)
 
     def next_batch(self, sess):
+        # 获取一个batch_size的数据
         ((enc_inp, enc_size), (dec_inp, dec_trg, dec_trg_size))= sess.run(self.line)
         return ((enc_inp, enc_size), (dec_inp, dec_trg, dec_trg_size))
 
@@ -125,15 +126,15 @@ class Model(object):
                 # 将elf.dec_lstm_cell和attention_mechanism封装成更高级的API
                 after_attention_cell = tf.contrib.seq2seq.AttentionWrapper(self.dec_lstm_cell,
                                                                             attention_mechanism, attention_layer_size=train_args.RNN_hidden_size)
+                # 目标token的embedding
                 self.trg_emb_inp = tf.nn.embedding_lookup(self.trg_embedding, self.dec_inp)
                 self.dec_top_outpus, self.dec_states = tf.nn.dynamic_rnn(after_attention_cell, self.trg_emb_inp, self.dec_label_size, dtype=tf.float32)
 
-            # 开始计算perplexity（语言模型中的loss，往perplexity小的方向更新）
             # 将输出经过一个全连接层
             self.outpus = tf.reshape(self.dec_top_outpus, [-1, train_args.RNN_hidden_size])  # shape=[None, 1024]
             self.logits = tf.matmul(self.outpus, self.full_connect_weights) + self.full_connect_biases  # shape=[None, 4003]
 
-            # tf.nn.sparse_softmax_cross_entropy_with_logits可以不需要将label变成one-hot形式，减少了步骤。
+            # tf.nn.sparse_softmax_cross_entropy_with_logits可以不需要将label变成one-hot形式，减少了步骤，大家后续可以自己尝试下。
             self.dec_label_reshaped = tf.reshape(self.dec_label, [-1])
 
             # 将self.dec_label_reshaped转换成one-hot的形式
@@ -147,6 +148,7 @@ class Model(object):
             # 如果不设置dtype=tf.float32的话，默认输出是True或者False
             self.mask_result = tf.sequence_mask(lengths=self.dec_label_size, maxlen=tf.shape(self.dec_inp)[1], dtype=tf.float32)
             self.mask_result = tf.reshape(self.mask_result, [-1])
+
             self.loss = self.loss * self.mask_result
             self.loss = tf.reduce_sum(self.loss)
             # 计算平均损失
@@ -158,7 +160,7 @@ class Model(object):
             # 计算梯度
             self.grads = tf.gradients(self.loss / tf.to_float(train_args.train_batch_size), self.trainable_variables)
             # 设定一个最大的梯度值，防止梯度爆炸。
-            self.grads, _ = tf.clip_by_global_norm(self.grads, 6)
+            self.grads, _ = tf.clip_by_global_norm(self.grads, 7)
             # apply 梯度到每个Variable上去。
             self.train_op = self.optimizer.apply_gradients(zip(self.grads, self.trainable_variables))
 
@@ -171,6 +173,7 @@ class Model(object):
             
 
     def train(self, sess, data):
+        # 训练的操作
         ((enc_inp, enc_size), (dec_inp, dec_trg, dec_trg_size)) = data
         feed = {self.enc_inp:enc_inp, self.enc_inp_size:enc_size,
                     self.dec_inp:dec_inp, self.dec_label:dec_trg, self.dec_label_size:dec_trg_size}
@@ -188,7 +191,7 @@ nm_model = Model()
 session_config = tf.ConfigProto(allow_soft_placement=True)  # sesstion的config
 session_config.gpu_options.allow_growth  = True
 # 打开Sesstion，开始训练模型
-with tf.Session(graph=mt_graph) as sess:
+with tf.Session(graph=mt_graph) as sess:  # 创建一个模型的图的sesstion
     saver = tf.train.Saver(max_to_keep=5)  # 构建saver
     data_batch_generation_obj.iterator_initialization(sess_data)
     sess.run(tf.global_variables_initializer())

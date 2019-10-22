@@ -103,55 +103,8 @@ class Model(object):
 
                 # 执行tf.while_loop()，它就会返回最终的结果
                 self.final_state_op, self.final_dec_inp_op, self.final_input_index_op = tf.while_loop(continue_loop_condition, loop_body_func, init_variables)
+                # 将最后的结果stack()一下
                 self.final_dec_inp_op = self.final_dec_inp_op.stack()
-
-    def inference(self):
-        with mt_graph.as_default():
-            with tf.variable_scope("decoder/rnn/attention_wrapper"):
-                # 这里我们使用变长的tf.TensorArray()来放置decoder的输入和输出内容。
-                self.dec_inp = tf.TensorArray(size=0, dtype=tf.int32, dynamic_size=True, clear_after_read=False)
-                # 我们先在self.dec_inp里放入[SOS]的id，代表开始标致。
-                self.dec_inp = self.dec_inp.write(0, 1)  # 1代表[SOS]的id
-                # 我们接下去会使用tf.while_loop()来不断的让decoder输出，因此我们需要提前定义好两个函数。
-                # 一个是循环条件，另一个是循环体，还有一个是初始变量。
-                # 我们先来定义初始变量，decoder有状态，输入两个变量，我们还要加一个step_count变量。
-                # 当step_count超出我们设定的范围的时候，就跳出循环。防止decoder无休止的产生outputs。
-                init_dec_state = self.after_attention_cell.zero_state(batch_size=1, dtype=tf.float32)
-                input_index_ = 0
-                init_variables = (init_dec_state, self.dec_inp, input_index_)
-
-                def continue_loop_condition(state, dec_inp, input_index):
-                    end_flag = tf.not_equal(dec_inp.read(input_index), 2)  # 2代表[EOS]的标致
-                    length_flag = tf.less_equal(input_index, train_args.test_max_output_sentence_length)
-                    continue_flag = tf.logical_and(end_flag, length_flag)
-                    continue_flag = tf.reduce_all(continue_flag)
-                    return continue_flag
-
-                def loop_body_func(state, dec_inp, input_index):
-                    # 读取decoder的输入
-                    inp = [dec_inp.read(input_index)]
-                    inp_embedding = tf.nn.embedding_lookup(self.trg_embedding, inp)
-
-                    # 调用call函数，向前走一步
-                    new_output, new_state = self.after_attention_cell.call(state=state, inputs=inp_embedding)
-                    
-                    # 将new_output再做一次映射，映射到字典的维度
-                    # 先将它reshape一下。
-                    new_output = tf.reshape(new_output, [-1, train_args.RNN_hidden_size])
-                    logits = (tf.matmul(new_output, self.full_connect_weights) + self.full_connect_biases)
-                    # 做一次softmax操作
-                    #predict_idx = tf.arg_max(logits, dimension=1, output_type=tf.int32)
-                    predict_idx = tf.argmax(logits, axis=1, output_type=tf.int32)
-
-                    # 把infer出的下一个idx加入到dec_inp里面去。
-                    dec_inp = dec_inp.write(input_index+1, predict_idx[0])
-
-                    return new_state, dec_inp, input_index+1
-
-                # 执行tf.while_loop()，它就会返回最终的结果
-                final_state_op, final_inp_op, final_input_index_op = tf.while_loop(continue_loop_condition, loop_body_func, init_variables)
-                
-        return final_inp_op.stack()
 
 
 # 读取英文的token_dictionary
@@ -163,7 +116,6 @@ with open(train_args.chinese_token_id_dictionary_pickle_path, 'rb') as file:
 chinese_id_token_dictionary = {idx:token for token, idx in chinese_token_id_dictionary.items()}
 
 nmt_model = Model()  # 创建模型
-#inference_op = nmt_model.inference()
 
 # sesstion 的config
 session_config = tf.ConfigProto(allow_soft_placement=True)
