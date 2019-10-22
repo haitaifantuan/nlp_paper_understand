@@ -53,7 +53,7 @@
 
 
 
-## 第3篇-doc2vec
+## 第3篇-doc2vec-Distributed_Representations_of_Sentences_and_Documents
 
 &ensp;&ensp;&ensp;&ensp;该代码全部由我自己从0开始写的，如果写的有异味，望海涵。然后给我留言提一些建议。
 
@@ -97,7 +97,7 @@
 
 
 
-## 第2篇-word2vec
+## 第2篇-word2vec-Efficient_Estimation_of_Word_Representations_in_Vector_Space
 
 &ensp;&ensp;&ensp;&ensp;本代码基于TensorFlow 的官方教程： https://www.tensorflow.org/tutorials/word2vec 。
 
