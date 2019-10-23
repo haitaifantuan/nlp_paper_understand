@@ -20,6 +20,8 @@ class Data_preprocess(object):
         该函数的作用是：将英文语料和中文语料进行tokenize，然后保存到本地。
         '''
         # 将英文语料tokenize，保存下来。
+        if not os.path.exists(train_args.raw_train_english_after_tokenization_data_path.replace('train.raw.en.after_tokenization.txt', '')):
+            os.mkdir(train_args.raw_train_english_after_tokenization_data_path.replace('train.raw.en.after_tokenization.txt', ''))
         fwrite = open(train_args.raw_train_english_after_tokenization_data_path, 'w', encoding='utf-8')
         with open(train_args.raw_train_english_data_path, 'r', encoding='utf-8') as file:
             for line in file:
@@ -30,6 +32,8 @@ class Data_preprocess(object):
         fwrite.close()
 
         # 将中文语料tokenize，保存下来。
+        if not os.path.exists(train_args.raw_train_chinese_after_tokenization_data_path.replace('train.raw.zh.after_tokenization.txt', '')):
+            os.mkdir(train_args.raw_train_chinese_after_tokenization_data_path.replace('train.raw.zh.after_tokenization.txt', ''))
         fwrite = open(train_args.raw_train_chinese_after_tokenization_data_path, 'w', encoding='utf-8')
         with open(train_args.raw_train_chinese_data_path, 'r', encoding='utf-8') as file:
             for line in file:
@@ -61,6 +65,8 @@ class Data_preprocess(object):
         for token_tuple in most_common_en_token_list:
             english_token_id_dictionary[token_tuple[0]] = len(english_token_id_dictionary)
         # 保存english_token_id_dictionary
+        if not os.path.exists(train_args.english_token_id_dictionary_pickle_path.replace('english_token_id_dictionary.pickle', '')):
+            os.mkdir(train_args.english_token_id_dictionary_pickle_path.replace('english_token_id_dictionary.pickle', ''))
         with open(train_args.english_token_id_dictionary_pickle_path, 'wb') as file:
             pickle.dump(english_token_id_dictionary, file)
 
@@ -79,6 +85,8 @@ class Data_preprocess(object):
         for token_tuple in most_common_zh_token_list:
             chinese_token_id_dictionary[token_tuple[0]] = len(chinese_token_id_dictionary)
         # 保存token_dictionary
+        if not os.path.exists(train_args.chinese_token_id_dictionary_pickle_path.replace('chinese_token_id_dictionary.pickle', '')):
+            os.mkdir(train_args.chinese_token_id_dictionary_pickle_path.replace('chinese_token_id_dictionary.pickle', ''))
         with open(train_args.chinese_token_id_dictionary_pickle_path, 'wb') as file:
             pickle.dump(chinese_token_id_dictionary, file)
         print('英文token_dictionary和中文token_dictionary创建完毕')
@@ -93,6 +101,9 @@ class Data_preprocess(object):
         # 读取英文的token_dictionary
         with open(train_args.english_token_id_dictionary_pickle_path, 'rb') as file:
             english_token_id_dictionary = pickle.load(file)
+        
+        if not os.path.exists(train_args.train_en_converted_to_id_path.replace('train.en.converted_to_id.txt', '')):
+            os.mkdir(train_args.train_en_converted_to_id_path.replace('train.en.converted_to_id.txt', ''))
         fwrite = open(train_args.train_en_converted_to_id_path, 'w', encoding='utf-8')
         # 读取tokenization后的英文语料，并将其转换为id形式。
         with open(train_args.raw_train_english_after_tokenization_data_path, 'r', encoding='utf-8') as file:
@@ -113,6 +124,9 @@ class Data_preprocess(object):
         # 读取中文的token_dictionary
         with open(train_args.chinese_token_id_dictionary_pickle_path, 'rb') as file:
             chinese_token_id_dictionary = pickle.load(file)
+
+        if not os.path.exists(train_args.train_zh_converted_to_id_path.replace('train.zh.converted_to_id.txt', '')):
+            os.mkdir(train_args.train_zh_converted_to_id_path.replace('train.zh.converted_to_id.txt', ''))
         fwrite = open(train_args.train_zh_converted_to_id_path, 'w', encoding='utf-8')
         # 读取tokenization后的中语料，并将其转换为id形式。
         with open(train_args.raw_train_chinese_after_tokenization_data_path, 'r', encoding='utf-8') as file:

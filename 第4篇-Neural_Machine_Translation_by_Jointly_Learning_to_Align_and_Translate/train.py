@@ -10,12 +10,12 @@ import os
 #os.environ["CUDA_VISIBLE_DEVICES"] = "0"  # 如果有GPU的同学，可以把这个打开，或者自己研究下怎么打开。
 
 # 首先判断模型保存的路径存不存在，不存在就创建
-if not os.path.exists('./saved_things'):
-    os.mkdir('./saved_things')
-if not os.path.exists('./saved_things/doesnt_finish_training_model'):
-    os.mkdir('./saved_things/doesnt_finish_training_model')
-if not os.path.exists('./saved_things/finish_training_model'):
-    os.mkdir('./saved_things/finish_training_model')
+if not os.path.exists('./saved_things/'):
+    os.mkdir('./saved_things/')
+if not os.path.exists('./saved_things/doesnt_finish_training_model/'):
+    os.mkdir('./saved_things/doesnt_finish_training_model/')
+if not os.path.exists('./saved_things/finish_training_model/'):
+    os.mkdir('./saved_things/finish_training_model/')
 
 
 mt_graph = tf.Graph()  # 创建machine translation 专用的graph
