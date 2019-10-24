@@ -1,4 +1,5 @@
 # NLP_Paper_Understand
+
 &ensp;&ensp;&ensp;&ensp;在这个repository里, 我会复现论文的代码。这些代码有可能是我自己写的，也有可能是论文作者分享的。如果代码是来自于论文作者的话，我有可能会重组一下代码，添加一些中文注释，从而让读者更容易读懂代码。
 
 ## 第4篇-Neural_Machine_Translation_by_Jointly_Learning_to_Align_and_Translate
@@ -8,11 +9,12 @@
 
 &ensp;&ensp;&ensp;&ensp;该代码全部由我自己从0开始写的，如果写的有异味，望海涵。然后给我留言提一些建议。
 
-&ensp;&ensp;&ensp;&ensp;代码使用的数据集是TODO，在这里我提供了腾讯云盘的下载链接。
+&ensp;&ensp;&ensp;&ensp;代码使用的数据集是TED的翻译数据，在这里我提供了腾讯云盘的下载链接。
 
-&ensp;&ensp;&ensp;&ensp;链接：TODO
+&ensp;&ensp;&ensp;&ensp;链接：https://share.weiyun.com/5TTvAFU
 
-&ensp;&ensp;&ensp;&ensp;密码：TODO
+&ensp;&ensp;&ensp;&ensp;密码：f8jl9e
+
 #### 论文原理说明以及代码详细讲解
 
 &ensp;&ensp;&ensp;&ensp;代码中有具体的注释
@@ -54,7 +56,7 @@
 
 &ensp;&ensp;&ensp;&ensp;1.将整个repository克隆下来。
 
-&ensp;&ensp;&ensp;&ensp;2.从腾讯云下载数据集，将名为“TODO”的压缩文件解压到“第4篇-Neural_Machine_Translation_by_Jointly_Learning_to_Align_and_Translate”文件夹下面。此时会多出一个名为“data”的文件夹，和"TODO"文件夹。
+&ensp;&ensp;&ensp;&ensp;2.从腾讯云下载数据集，将名为“已训练50个epoch的模型”的压缩文件解压到“第4篇-Neural_Machine_Translation_by_Jointly_Learning_to_Align_and_Translate”文件夹下面。此时会多出一个名为“data”的文件夹，和"saved_things"文件夹。
 
 &ensp;&ensp;&ensp;&ensp;3.如果使用vs code的话，那就使用vs code打开“第4篇-Neural_Machine_Translation_by_Jointly_Learning_to_Align_and_Translate”文件夹。这里说明下，为什么打开的是“第4篇-Neural_Machine_Translation_by_Jointly_Learning_to_Align_and_Translate”这个文件夹。因为我使用的绝对路径都是以“第4篇-Neural_Machine_Translation_by_Jointly_Learning_to_Align_and_Translate”这个文件夹为当前路径的。
 

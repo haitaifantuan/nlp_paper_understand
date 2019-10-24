@@ -12,9 +12,9 @@ chinese_token_id_dictionary_pickle_path = 'data/token_dictionary/chinese_token_i
 train_en_converted_to_id_path = 'data/train_data_converted_to_id/train.en.converted_to_id.txt'
 train_zh_converted_to_id_path = 'data/train_data_converted_to_id/train.zh.converted_to_id.txt'
 
-
 doesnt_finish_model_saved_path = 'saved_things/doesnt_finish_training_model/model'
-doesnt_finish_model_saved_path_cheackpoint = doesnt_finish_model_saved_path.replace('/model', '/checkpoint')
+doesnt_finish_model_saved_path_cheackpoint = doesnt_finish_model_saved_path.replace(
+    '/model', '/checkpoint')
 finish_model_saved_path = 'saved_things/finish_training_model/model'
 
 train_max_sent_len = 50
