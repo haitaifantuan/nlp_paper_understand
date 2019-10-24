@@ -6,8 +6,8 @@ Author:Haitaifantuan
 import tensorflow as tf
 import train_args
 import os
-
-#os.environ["CUDA_VISIBLE_DEVICES"] = "0"  # 如果有GPU的同学，可以把这个打开，或者自己研究下怎么打开。
+# 如果有GPU的同学，可以把这个打开，或者自己研究下怎么打开。
+#os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
 # 首先判断模型保存的路径存不存在，不存在就创建
 if not os.path.exists('./saved_things/'):
@@ -43,7 +43,8 @@ class data_batch_generation(object):
             # 为self.src_data添加一下每个句子的长度
             self.src_data = self.src_data.map(lambda x: (x, tf.size(x)))
             # 为self.trg_data添加一下decoder的输入。形式为(dec_input, trg_label, trg_length)
-            # tf.size(x)后面计算loss的时候拿来mask用的以及使用tf.nn.bidirectional_dynamic_rnn()这个函数的时候使用的。
+            # tf.size(x)后面计算loss的时候拿来mask用的以及
+            # 使用tf.nn.bidirectional_dynamic_rnn()这个函数的时候使用的。
             self.trg_data = self.trg_data.map(
                 lambda x: (tf.concat([[1], x[:-1]], axis=0), x, tf.size(x)))
 
@@ -163,9 +164,11 @@ class Model(object):
                     num_units=train_args.RNN_hidden_size)
                 self.enc_backward_lstm_cell = tf.nn.rnn_cell.BasicLSTMCell(
                     num_units=train_args.RNN_hidden_size)
-                # 使用bidirectional_dynamic_rnn构造双向RNN网络。把输入的token的向量放入到encoder里面去，得到输出。
+                # 使用bidirectional_dynamic_rnn构造双向RNN网络。
+                # 把输入的token的向量放入到encoder里面去，得到输出。
                 # enc_top_outputs包含了前向LSTM和反向LSTM的输出。enc_top_states也一样。
-                # 我们把前向的LSTM顶层的outputs和反向的LSTM顶层的outputs concat一下，作为attention的输入。
+                # 我们把前向的LSTM顶层的outputs和反向的LSTM顶层的outputs concat一下，
+                # 作为attention的输入。
                 # enc_top_outputs这个tuple，每一个元素的shape都是[batch_size, time_step, hidden_size]
                 self.enc_top_outputs, self.enc_top_states = tf.nn.bidirectional_dynamic_rnn(
                     cell_fw=self.enc_forward_lstm_cell,
@@ -210,7 +213,8 @@ class Model(object):
                 self.outpus, self.full_connect_weights
             ) + self.full_connect_biases  # shape=[None, 4003]
 
-            # tf.nn.sparse_softmax_cross_entropy_with_logits可以不需要将label变成one-hot形式，减少了步骤，大家后续可以自己尝试下。
+            # tf.nn.sparse_softmax_cross_entropy_with_logits可以不需要将label变成one-hot形式，
+            # 减少了步骤，大家后续可以自己尝试下。
             self.dec_label_reshaped = tf.reshape(self.dec_label, [-1])
 
             # 将self.dec_label_reshaped转换成one-hot的形式
@@ -221,8 +225,10 @@ class Model(object):
             self.loss = tf.nn.softmax_cross_entropy_with_logits_v2(
                 labels=self.dec_label_after_one_hot, logits=self.logits)
 
-            # 由于我们在构造数据的时候，将没到长度的地方用[UNK]补全了，因此这些地方的loss不能参与计算，我们要将它们mask掉。
-            # 这里我们设置dtype=tf.float32，意思是让没有mask掉的地方输出为1，被mask掉的地方输出为0，方便我们后面做乘积。
+            # 由于我们在构造数据的时候，将没到长度的地方用[UNK]补全了，
+            # 因此这些地方的loss不能参与计算，我们要将它们mask掉。
+            # 这里我们设置dtype=tf.float32，意思是让没有mask掉的地方输出为1，
+            # 被mask掉的地方输出为0，方便我们后面做乘积。
             # 如果不设置dtype=tf.float32的话，默认输出是True或者False
             self.mask_result = tf.sequence_mask(lengths=self.dec_label_size,
                                                 maxlen=tf.shape(
@@ -321,7 +327,8 @@ with tf.Session(graph=mt_graph) as sess:  # 创建一个模型的图的sesstion
                               global_step_per_epoch_count))
             global_step_per_epoch_count = 0
 
-            # 如果报tf.errors.OutOfRangeError这个错，说明数据已经被遍历完了，也就是一个epoch结束了。我们重新initialize数据集一下，进行下一个epoch。
+            # 如果报tf.errors.OutOfRangeError这个错，说明数据已经被遍历完了，
+            # 也就是一个epoch结束了。我们重新initialize数据集一下，进行下一个epoch。
             data_batch_generation_obj.iterator_initialization(
                 sess_data)  # 这里要传入data的sesstion
             # 暂时保存下未训练完的模型

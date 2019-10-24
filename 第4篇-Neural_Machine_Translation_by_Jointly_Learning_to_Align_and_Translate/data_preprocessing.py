@@ -68,8 +68,10 @@ class Data_preprocess(object):
         '''
         # 生成英文的token_dictionary
         english_token_id_dictionary = {}
+        # 我们定义unk的id是0，unk的意思是，
+        # 当句子中碰到token dictionary里面没有的token的时候，就转换为这个
         english_token_id_dictionary[
-            '<unk>'] = 0  # 我们定义unk的id是0，unk的意思是，当句子中碰到token dictionary里面没有的token的时候，就转换为这个
+            '<unk>'] = 0  
         english_token_id_dictionary['<sos>'] = 1  # 我们定义sos的id是1
         english_token_id_dictionary['<eos>'] = 2  # 我们定义eos的id是1
         en_counter = collections.Counter(
@@ -100,8 +102,10 @@ class Data_preprocess(object):
 
         # 生成中文的token_dictionary 以及把 tokenization后的结果保存下来
         chinese_token_id_dictionary = {}
+        # 我们定义unk的id是0，unk的意思是，
+        # 当句子中碰到token dictionary里面没有的token的时候，就转换为这个
         chinese_token_id_dictionary[
-            '<unk>'] = 0  # 我们定义unk的id是0，unk的意思是，当句子中碰到token dictionary里面没有的token的时候，就转换为这个
+            '<unk>'] = 0  
         chinese_token_id_dictionary['<sos>'] = 1  # 我们定义sos的id是1
         chinese_token_id_dictionary['<eos>'] = 2  # 我们定义eos的id是1
         zh_counter = collections.Counter(

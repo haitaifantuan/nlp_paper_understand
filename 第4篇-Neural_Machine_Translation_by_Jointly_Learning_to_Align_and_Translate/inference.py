@@ -67,9 +67,12 @@ class Model(object):
                 self.enc_backward_lstm_cell = tf.nn.rnn_cell.BasicLSTMCell(
                     num_units=train_args.RNN_hidden_size
                 )  # 这是变量，resotre的时候会被恢复。
-                # 使用bidirectional_dynamic_rnn构造双向RNN网络。把输入的token的向量放入到encoder里面去，得到输出。
-                # enc_top_outputs包含了前向LSTM和反向LSTM的输出。enc_top_states也一样。
-                # 我们把前向的LSTM顶层的outputs和反向的LSTM顶层的outputs concat一下，作为attention的输入。
+                # 使用bidirectional_dynamic_rnn构造双向RNN网络。
+                # 把输入的token的向量放入到encoder里面去，得到输出。
+                # enc_top_outputs包含了前向LSTM和反向LSTM的输出。
+                # enc_top_states也一样。
+                # 我们把前向的LSTM顶层的outputs和反向的LSTM顶层的outputs concat一下，
+                # 作为attention的输入。
                 # enc_top_outputs这个tuple，每一个元素的shape都是[batch_size, time_step, hidden_size]
                 # 这一层以下两个操作，不是变量。resotre的时候对它们没有影响。
                 self.enc_top_outputs, self.enc_top_states = tf.nn.bidirectional_dynamic_rnn(
@@ -88,19 +91,23 @@ class Model(object):
                         num_units=train_args.RNN_hidden_size)
                     for _ in range(train_args.num_decoder_layers)
                 ])
-                # 选择BahdanauAttention作为注意力机制。它是使用一层隐藏层的前馈神经网络。这个操作不是变量。resotre的时候对它们没有影响。
+                # 选择BahdanauAttention作为注意力机制。它是使用一层隐藏层的前馈神经网络。
+                # 这个操作不是变量。resotre的时候对它们没有影响。
                 self.attention_mechanism = tf.contrib.seq2seq.BahdanauAttention(
                     num_units=train_args.RNN_hidden_size,
                     memory=self.enc_outpus,
                     memory_sequence_length=self.enc_inp_size)
-                # 将self.dec_lstm_cell和self.attention_mechanism封装成更高级的API。这个操作不是变量。resotre的时候对它们没有影响。
+                # 将self.dec_lstm_cell和self.attention_mechanism封装成更高级的API。
+                # 这个操作不是变量。resotre的时候对它们没有影响。
                 self.after_attention_cell = tf.contrib.seq2seq.AttentionWrapper(
                     self.dec_lstm_cell,
                     self.attention_mechanism,
                     attention_layer_size=train_args.RNN_hidden_size)
 
-            # 这里的tf.variable_scope()一定是"decoder/rnn/attention_wrapper"。否则decoder的参数加载不进来。
-            # 大家可以在train.py文件和这个文件里面写tf.trainable_variables()，然后打断点查看下变量以及变量域
+            # 这里的tf.variable_scope()一定是"decoder/rnn/attention_wrapper"。
+            # 否则decoder的参数加载不进来。
+            # 大家可以在train.py文件和这个文件里面写tf.trainable_variables()，
+            # 然后打断点查看下变量以及变量域
             with tf.variable_scope("decoder/rnn/attention_wrapper"):
                 # 这里我们使用变长的tf.TensorArray()来放置decoder的输入和输出内容。
                 self.dec_inp = tf.TensorArray(size=0,
@@ -109,7 +116,8 @@ class Model(object):
                                               clear_after_read=False)
                 # 我们先在self.dec_inp里放入[SOS]的id，代表开始标致。
                 self.dec_inp = self.dec_inp.write(0, 1)  # 1代表[SOS]的id
-                # 我们接下去会使用tf.while_loop()来不断的让decoder输出，因此我们需要提前定义好两个函数。
+                # 我们接下去会使用tf.while_loop()来不断的让decoder输出，
+                # 因此我们需要提前定义好两个函数。
                 # 一个是循环条件，另一个是循环体，还有一个是初始变量。
                 # 我们先来定义初始变量，decoder有状态，输入两个变量，我们还要加一个step_count变量。
                 # 当step_count超出我们设定的范围的时候，就跳出循环。防止decoder无休止的产生outputs。
@@ -146,7 +154,6 @@ class Model(object):
                         tf.matmul(new_output, self.full_connect_weights) +
                         self.full_connect_biases)
                     # 做一次softmax操作
-                    #predict_idx = tf.arg_max(logits, dimension=1, output_type=tf.int32)
                     predict_idx = tf.argmax(logits,
                                             axis=1,
                                             output_type=tf.int32)
@@ -209,5 +216,6 @@ with tf.Session(graph=mt_graph, config=session_config) as sess:
         translation_result = list(translation_result)
         for index, idx in enumerate(translation_result):
             translation_result[index] = chinese_id_token_dictionary[idx]
+        # 因为返回的屎decoder的输入部分，因此第1位为<sos>，不需要展现出来。
         print(''.join(
-            translation_result[1:]))  # 因为返回的屎decoder的输入部分，因此第1位为<sos>，不需要展现出来。
+            translation_result[1:]))  
