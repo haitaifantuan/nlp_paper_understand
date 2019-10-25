@@ -45,8 +45,7 @@ def downloadFromInternet(corpus_url, corpus_name):
     如果本地数据集不存在，就下载，否则跳过
     """
     if not os.path.exists(corpus_name):
-        corpus_name, _ = urllib.request.urlretrieve(corpus_url + corpus_name,
-                                                    corpus_name)
+        corpus_name, _ = urllib.request.urlretrieve(corpus_url + corpus_name,corpus_name)
 
     return corpus_name
 
@@ -67,8 +66,7 @@ def build_dataset(data_list, max_vocabulary_size):
     首先，创建词典，然后将原始的单词表示成词对应的index
     """
     word_count = [['UNK', 0]]
-    word_count.extend(
-        collections.Counter(data_list).most_common(max_vocabulary_size - 1))
+    word_count.extend(collections.Counter(data_list).most_common(max_vocabulary_size - 1))
     dictionary = {}
 
     # 构建词典
@@ -196,11 +194,8 @@ with graph.as_default():
     with tf.device('/gpu:0'):
         # Variables.
         # embedding, vector for each word in the vocabulary。embeddings变量就是词向量矩阵。
-        embeddings = tf.Variable(
-            tf.random_uniform([vocabulary_size, embedding_size], -1.0, 1.0))
-        nce_weights = tf.Variable(
-            tf.truncated_normal([vocabulary_size, embedding_size],
-                                stddev=1.0 / math.sqrt(embedding_size)))
+        embeddings = tf.Variable(tf.random_uniform([vocabulary_size, embedding_size], -1.0, 1.0))
+        nce_weights = tf.Variable(tf.truncated_normal([vocabulary_size, embedding_size],stddev=1.0 / math.sqrt(embedding_size)))
         nce_biases = tf.Variable(tf.zeros([vocabulary_size]))
 
     # Model.
@@ -209,16 +204,14 @@ with graph.as_default():
     # manually doing this might not be efficient given there are 50000 entries in embeddings
     embeds = None
     for i in range(2 * cbow_window):
-        embedding_i = tf.nn.embedding_lookup(
-            embeddings, train_dataset[:, i])  # 从词向量矩阵中，根据index找到对应的词的词向量。
-        print('embedding %d shape: %s' %
-              (i, embedding_i.get_shape().as_list()))
+        # 从词向量矩阵中，根据index找到对应的词的词向量。
+        embedding_i = tf.nn.embedding_lookup(embeddings, train_dataset[:, i])
+        print('embedding %d shape: %s' % (i, embedding_i.get_shape().as_list()))
         emb_x, emb_y = embedding_i.get_shape().as_list()
         if embeds is None:
             embeds = tf.reshape(embedding_i, [emb_x, emb_y, 1])
         else:
-            embeds = tf.concat(
-                [embeds, tf.reshape(embedding_i, [emb_x, emb_y, 1])], 2)
+            embeds = tf.concat([embeds, tf.reshape(embedding_i, [emb_x, emb_y, 1])], 2)
 
     assert embeds.get_shape().as_list()[2] == 2 * cbow_window
     print("Concat embedding size: %s" % embeds.get_shape().as_list())

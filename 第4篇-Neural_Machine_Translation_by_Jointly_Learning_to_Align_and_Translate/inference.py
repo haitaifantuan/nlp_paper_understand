@@ -16,57 +16,30 @@ class Model(object):
         with mt_graph.as_default():
             # 创建placeholder
             with tf.variable_scope("ipt_placeholder"):
-                self.enc_inp = tf.placeholder(tf.int32,
-                                              shape=[1, None])  # None是因为句长不确定
-                self.enc_inp_size = tf.placeholder(tf.int32,
-                                                   shape=[1])  # batch_size是1
+                self.enc_inp = tf.placeholder(tf.int32, shape=[1, None])  # None是因为句长不确定
+                self.enc_inp_size = tf.placeholder(tf.int32, shape=[1])  # batch_size是1
 
             # 创建源语言的token的embedding和目标语言的token的embedding
             with tf.variable_scope("token_embedding"):
                 # 源语言的token的embedding。这一层里面的都是变量，resotre的时候会被恢复。
-                self.src_embedding = tf.Variable(
-                    initial_value=tf.truncated_normal(shape=[
-                        train_args.Source_vocab_size,
-                        train_args.RNN_hidden_size
-                    ],
-                                                      dtype=tf.float32),
-                    trainable=True)
+                self.src_embedding = tf.Variable(initial_value=tf.truncated_normal(shape=[train_args.Source_vocab_size, train_args.RNN_hidden_size], dtype=tf.float32), trainable=True)
                 # 目标语言的token的embedding
-                self.trg_embedding = tf.Variable(
-                    initial_value=tf.truncated_normal(shape=[
-                        train_args.Target_vocab_size,
-                        train_args.RNN_hidden_size
-                    ],
-                                                      dtype=tf.float32),
-                    trainable=True)
+                self.trg_embedding = tf.Variable(initial_value=tf.truncated_normal(shape=[train_args.Target_vocab_size, train_args.RNN_hidden_size], dtype=tf.float32), trainable=True)
                 # 全连接层的参数
                 if train_args.Share_softmax_embedding:
-                    self.full_connect_weights = tf.transpose(
-                        self.trg_embedding)
+                    self.full_connect_weights = tf.transpose(self.trg_embedding)
                 else:
-                    self.full_connect_weights = tf.Variable(
-                        initial_value=tf.truncated_normal(shape=[
-                            train_args.RNN_hidden_size,
-                            train_args.Target_vocab_size
-                        ],
-                                                          dtype=tf.float32),
-                        trainable=True)
-                self.full_connect_biases = tf.Variable(
-                    initial_value=tf.truncated_normal(
-                        shape=[train_args.Target_vocab_size
-                               ], dtype=tf.float32))
+                    self.full_connect_weights = tf.Variable(initial_value=tf.truncated_normal(shape=[train_args.RNN_hidden_size, train_args.Target_vocab_size], dtype=tf.float32), trainable=True)
+                self.full_connect_biases = tf.Variable(initial_value=tf.truncated_normal(shape=[train_args.Target_vocab_size], dtype=tf.float32))
 
             with tf.variable_scope("encoder"):
                 # 根据输入，得到输入的token的向量
-                self.src_emb_inp = tf.nn.embedding_lookup(
-                    self.src_embedding, self.enc_inp)  # 这是变量，resotre的时候会被恢复。
+                self.src_emb_inp = tf.nn.embedding_lookup(self.src_embedding, self.enc_inp)  # 这是变量，resotre的时候会被恢复。
                 # 构建编码器中的双向LSTM
                 self.enc_forward_lstm_cell = tf.nn.rnn_cell.BasicLSTMCell(
-                    num_units=train_args.RNN_hidden_size
-                )  # 这是变量，resotre的时候会被恢复。
+                                                                    num_units=train_args.RNN_hidden_size)  # 这是变量，resotre的时候会被恢复。
                 self.enc_backward_lstm_cell = tf.nn.rnn_cell.BasicLSTMCell(
-                    num_units=train_args.RNN_hidden_size
-                )  # 这是变量，resotre的时候会被恢复。
+                                                                    num_units=train_args.RNN_hidden_size)  # 这是变量，resotre的时候会被恢复。
                 # 使用bidirectional_dynamic_rnn构造双向RNN网络。
                 # 把输入的token的向量放入到encoder里面去，得到输出。
                 # enc_top_outputs包含了前向LSTM和反向LSTM的输出。
@@ -82,15 +55,12 @@ class Model(object):
                     sequence_length=self.enc_inp_size,
                     dtype=tf.float32)
                 self.enc_outpus = tf.concat(
-                    [self.enc_top_outputs[0], self.enc_top_outputs[1]], -1)
+                                        [self.enc_top_outputs[0], self.enc_top_outputs[1]], -1)
 
             with tf.variable_scope("decoder"):
                 # 创建多层decoder。这是变量，resotre的时候会被恢复。
-                self.dec_lstm_cell = tf.nn.rnn_cell.MultiRNNCell([
-                    tf.nn.rnn_cell.BasicLSTMCell(
-                        num_units=train_args.RNN_hidden_size)
-                    for _ in range(train_args.num_decoder_layers)
-                ])
+                self.dec_lstm_cell = tf.nn.rnn_cell.MultiRNNCell(
+                    [tf.nn.rnn_cell.BasicLSTMCell(num_units=train_args.RNN_hidden_size) for _ in range(train_args.num_decoder_layers)])
                 # 选择BahdanauAttention作为注意力机制。它是使用一层隐藏层的前馈神经网络。
                 # 这个操作不是变量。resotre的时候对它们没有影响。
                 self.attention_mechanism = tf.contrib.seq2seq.BahdanauAttention(
@@ -148,15 +118,10 @@ class Model(object):
 
                     # 将new_output再做一次映射，映射到字典的维度
                     # 先将它reshape一下。
-                    new_output = tf.reshape(new_output,
-                                            [-1, train_args.RNN_hidden_size])
-                    logits = (
-                        tf.matmul(new_output, self.full_connect_weights) +
-                        self.full_connect_biases)
+                    new_output = tf.reshape(new_output, [-1, train_args.RNN_hidden_size])
+                    logits = (tf.matmul(new_output, self.full_connect_weights) + self.full_connect_biases)
                     # 做一次softmax操作
-                    predict_idx = tf.argmax(logits,
-                                            axis=1,
-                                            output_type=tf.int32)
+                    predict_idx = tf.argmax(logits, axis=1, output_type=tf.int32)
 
                     # 把infer出的下一个idx加入到dec_inp里面去。
                     dec_inp = dec_inp.write(input_index + 1, predict_idx[0])
@@ -176,10 +141,7 @@ with open(train_args.english_token_id_dictionary_pickle_path, 'rb') as file:
 # 读取中文的token_dictionary
 with open(train_args.chinese_token_id_dictionary_pickle_path, 'rb') as file:
     chinese_token_id_dictionary = pickle.load(file)
-chinese_id_token_dictionary = {
-    idx: token
-    for token, idx in chinese_token_id_dictionary.items()
-}
+chinese_id_token_dictionary = {idx: token for token, idx in chinese_token_id_dictionary.items()}
 
 nmt_model = Model()  # 创建模型
 

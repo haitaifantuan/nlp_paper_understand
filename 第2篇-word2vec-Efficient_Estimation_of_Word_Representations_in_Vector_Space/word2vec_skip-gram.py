@@ -45,8 +45,7 @@ def downloadFromInternet(corpus_url, corpus_name):
     如果本地数据集不存在，就下载，否则跳过
     """
     if not os.path.exists(corpus_name):
-        corpus_name, _ = urllib.request.urlretrieve(corpus_url + corpus_name,
-                                                    corpus_name)
+        corpus_name, _ = urllib.request.urlretrieve(corpus_url + corpus_name,corpus_name)
 
     return corpus_name
 
@@ -120,9 +119,7 @@ def batch_generation(batch_size=8, num_skips=2, skip_window=1):
 
     for _ in range(span):
         # data_index是当前数据开始的位置，产生batch_size个样本后就往后推1位（产生batch）。
-        buffer.append(
-            data[data_index]
-        )  
+        buffer.append(data[data_index])  
         # 一个周期结束后，重新回到开头。
         data_index = (data_index + 1) % len(data)
 
@@ -205,15 +202,12 @@ with graph.as_default():
     # 我们在cpu上定义模型，可以改成'/gpu:0'
     with tf.device('/gpu:0'):
         # 定义embeddings变量，其实就是词向量矩阵。
-        embeddings = tf.Variable(
-            tf.random_uniform([vocabulary_size, embedding_size], -1.0, 1.0))
+        embeddings = tf.Variable(tf.random_uniform([vocabulary_size, embedding_size], -1.0, 1.0))
         # 利用embedding_lookup可以轻松得到一个batch内的所有的词向量
         embed = tf.nn.embedding_lookup(embeddings, train_inputs)
 
         # 创建两个变量用于NCE Loss（即选取噪声词的二分类损失）
-        nce_weights = tf.Variable(
-            tf.truncated_normal([vocabulary_size, embedding_size],
-                                stddev=1.0 / math.sqrt(embedding_size)))
+        nce_weights = tf.Variable(tf.truncated_normal([vocabulary_size, embedding_size], stddev=1.0 / math.sqrt(embedding_size)))
         nce_biases = tf.Variable(tf.zeros([vocabulary_size]))
 
     # tf.nn.nce_loss会自动选取噪声词，并且形成损失。
@@ -239,8 +233,7 @@ with graph.as_default():
     normalized_embeddings = embeddings / norm
 
     # 找出和验证词的embedding并计算它们和所有单词的相似度
-    valid_embeddings = tf.nn.embedding_lookup(normalized_embeddings,
-                                              valid_dataset)
+    valid_embeddings = tf.nn.embedding_lookup(normalized_embeddings, valid_dataset)
     similarity = tf.matmul(valid_embeddings,
                            normalized_embeddings,
                            transpose_b=True)
